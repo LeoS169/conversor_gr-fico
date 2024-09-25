@@ -2,33 +2,55 @@
 Aqui, ficará tudo relacionado ao aplicativo flet. Entrada e saída dos dados
 O app terá que ter:
 
-    -   Abrir arquivo com tabelas
+    -   [X]Abrir arquivo com tabelas (selecionar arquivo e o caminho dele ser guardado)
+            --Envio do caminho para o conversor --
+
     -       Entrada para eixo y do gráfico (uma das colunas da tabela)
+                -> Entrada de texto para nome da coluna (testa se coluna existe no arquivo) / Seletor de colunas disponíveis <-
     -           entrada para exo x do gráfico
+                    -> Entrada de texto para nome da coluna (testa se coluna existe no arquivo) / Seletor de colunas disponíveis <-
+    ]
+                -> Mostrar lista de colunas possíveis <-
+                --Processo no coversor--
+
     -               saída para o user: O gráfico com as possibilidades de download
 """
 import flet as ft
+from conversor import Arquivo
 
 def main(page: ft.Page): # Criação de página inicial do app
-    def pick_files_result(e: ft.FilePickerResultEvent): # função para a seleção de arquivos. e contém as informações de selceçãp
+
+
+    def pick_files_result(e: ft.FilePickerResultEvent): # validação do arquivo
             
         if e.files: #testa se algum arquivo foi selecionado
 
-            arquivos.value = ','.join(map(lambda f: f.name, e.files))
-                # função lambda irá receber um arquivo f e retornar sei nome (f.name), isso dentro de um map que irá
-                # repetir a função para cada e.files, que aloca os arquivos
+            caminho_arquivo.value = ", ".join(map(lambda f: f.path, e.files)) #pega o caminho absoluto do arquivo
+                # função lambda irá receber um arquivo f e retornar seu caminhi (f.path), isso dentro de um map que irá
+                # repetir a função para cada e.files, que aloca os caminho_arquivo
                 # o join ira unir cada elemento da lista em um string, separado por uma ,
             
-        else: 
-            arquivos.value = "Nenhum arquivo selecionado." 
+            arquivo = Arquivo( # cria um objeto "Arquivo", com o nome e o endereco sendo o caminho pego usando o pick_file
+                nome='arquivo_user',
+                endereco=caminho_arquivo.value
+            )
 
-        arquivos.update() # atualiza valores da variável de arquivos selecionados
+            print(arquivo.get_endereco) # teste para ver se tá pegando o endereco certo
+            print(arquivo.get_colunas_arq[0]) # teste para ver se tá pegando as colunas
 
-    seletor_arquivos = ft.FilePicker(on_result=pick_files_result) # cria o seletor para selecão de arquivos
-    # chama a função de verificação de arquivos, ao fim
+            
+        else:
 
-    page.overlay.append(seletor_arquivos) # adiciona o seletor sobre a página, quando necessário
-    arquivos = ft.Text()
+            caminho_arquivo.value = "Nenhum arquivo selecionado." 
+
+        caminho_arquivo.update() # atualiza valores da variável de caminho_arquivo selecionados
+
+    seletor_caminho_arquivo = ft.FilePicker(on_result=pick_files_result) # cria o seletor para selecão do arquivo
+    # chama a função de verificação de caminho_arquivo, ao fim (para cancelar ou seleção do arquivo)
+
+    page.overlay.append(seletor_caminho_arquivo) # adiciona o seletor sobre a página
+
+    caminho_arquivo = ft.Text() # variável que aloca o caminho
 
     page.add(
 
@@ -36,16 +58,17 @@ def main(page: ft.Page): # Criação de página inicial do app
             [
                 ft.ElevatedButton( # botão no aplicativo para seleção
                     
-                    "Pick files",
-                    icon=ft.icons.UPLOAD_FILE,
-                    on_click=lambda _: seletor_arquivos.pick_files( #chama a função pick_files do seletor_arquivos
-                        allow_multiple=True
-                    ),
+                    "Selecionar Arquivo",
+                    icon=ft.icons.FILE_OPEN_SHARP,
+                    on_click=lambda _: seletor_caminho_arquivo.pick_files(
+                        allow_multiple=False
+                    ) #chama a função pick_files do seletor_caminho_arquivo,
 
                 ),
 
-                arquivos,
-            ]
+                caminho_arquivo,
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
         )
     )
 
