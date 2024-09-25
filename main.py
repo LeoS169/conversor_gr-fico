@@ -18,6 +18,7 @@ O app terá que ter:
 import flet as ft
 from conversor import Arquivo
 
+
 def main(page: ft.Page): # Criação de página inicial do app
 
 
@@ -45,17 +46,42 @@ def main(page: ft.Page): # Criação de página inicial do app
 
         caminho_arquivo.update() # atualiza valores da variável de caminho_arquivo selecionados
 
+
+
     seletor_caminho_arquivo = ft.FilePicker(on_result=pick_files_result) # cria o seletor para selecão do arquivo
     # chama a função de verificação de caminho_arquivo, ao fim (para cancelar ou seleção do arquivo)
 
     page.overlay.append(seletor_caminho_arquivo) # adiciona o seletor sobre a página
-
     caminho_arquivo = ft.Text() # variável que aloca o caminho
+
+    mensagem_ini = ft.Text(
+        value='Gerador de gráficos',
+        size=40
+       
+    )
+    entrada_eixoX = ft.TextField(
+        value='',
+        label='Nome da coluna X'
+    )
+
+    entrada_eixoY = ft.TextField(
+        value='',
+        label='Nome da coluna Y'
+    )
+
 
     page.add(
 
         ft.Row(
             [
+
+                mensagem_ini
+
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+        ft.Row(
+            controls=[
                 ft.ElevatedButton( # botão no aplicativo para seleção
                     
                     "Selecionar Arquivo",
@@ -65,11 +91,20 @@ def main(page: ft.Page): # Criação de página inicial do app
                     ) #chama a função pick_files do seletor_caminho_arquivo,
 
                 ),
+                caminho_arquivo
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+        ft.Row(
+            controls=[
 
-                caminho_arquivo,
+                entrada_eixoX,
+                entrada_eixoY
+
             ],
             alignment=ft.MainAxisAlignment.CENTER
         )
     )
+
 
 ft.app(main)
