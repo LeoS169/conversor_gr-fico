@@ -38,9 +38,9 @@ def main(page: ft.Page): # Criação de página inicial do app
         label='Nome da coluna Y'
     )
 
-    bot_cria_graf = ft.ElevatedButton(
+    bot_testa_colunas = ft.ElevatedButton(
             text='Criar',
-            on_click=lambda _:cria_graf()
+            on_click=lambda _:testa_colunas()
     )
 
     bot_abre_graf = ft.ElevatedButton(
@@ -55,22 +55,23 @@ def main(page: ft.Page): # Criação de página inicial do app
 
     saida_usuário = ft.Text(value='Aqui aparecerá a mensagem para usuário')
     
-#Funcção para abrir arquivo
+    
+#Funcção para criar grafico e abrir arquivo
     def abre_graf(): # abre o arquivo no formato html, no navegador
 
         arquivo = Arquivo(
             nome='arquivo_user',
             endereco=caminho_arquivo.value
         )
-        grafico = arquivo.cria_graifco(
+
+        arquivo.abre_graf(
             colunaX=entrada_eixoX.value,
             colunaY=entrada_eixoY.value
         )
-        grafico.show()
 
 
-#Criação do gráfico
-    def cria_graf():
+# Testa valores de coluna
+    def testa_colunas():
 
         arquivo = Arquivo(
             nome='arquivo_user',
@@ -152,7 +153,7 @@ def main(page: ft.Page): # Criação de página inicial do app
 
                 entrada_eixoX,
                 entrada_eixoY,
-                bot_cria_graf
+                bot_testa_colunas
 
             ],
             alignment=ft.MainAxisAlignment.CENTER
