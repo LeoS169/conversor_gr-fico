@@ -20,14 +20,14 @@ from conversor import Arquivo
 
 def main(page: ft.Page): # Criação de página inicial do app
     page.title = 'Criador de gráfico'
+    page.window_resizable = False
 
 #Elementos:
     mensagem_ini = ft.Text(
-        
         value='Gerador de gráficos',
         size=40
-       
     )
+
     entrada_eixoX = ft.TextField(
         value='',
         label='Nome da coluna X'
@@ -43,45 +43,82 @@ def main(page: ft.Page): # Criação de página inicial do app
             on_click=lambda _:cria_graf()
     )
 
+    bot_abre_graf = ft.ElevatedButton(
+        text='Abrir Gráfico',
+        on_click=lambda _:abre_graf(),
+        disabled=True
+    )
 
+    bot_salvar_graf = ft.ElevatedButton(
+        text='Salvar Gráfico'
+    )
+
+    saida_usuário = ft.Text(value='Aqui aparecerá a mensagem para usuário')
+    
+#Funcção para abrir arquivo
+    def abre_graf(): # abre o arquivo no formato html, no navegador
+
+        arquivo = Arquivo(
+            nome='arquivo_user',
+            endereco=caminho_arquivo.value
+        )
+        grafico = arquivo.cria_graifco(
+            colunaX=entrada_eixoX.value,
+            colunaY=entrada_eixoY.value
+        )
+        grafico.show()
+
+
+#Criação do gráfico
     def cria_graf():
+
         arquivo = Arquivo(
             nome='arquivo_user',
             endereco=caminho_arquivo.value
         )
 
-        teste_coluna = arquivo.Testa_colunas( #será true se as douas colunas existirem
-            colunaX=entrada_eixoX.value,
-            colunaY=entrada_eixoY.value
-        )
-    
+        if arquivo.endereco == '': # testa se o arquivo foi escolhido
+            saida_usuário.value = 'Escolha um arquivo primeiro!'
+        else: 
+            if entrada_eixoX.value == '' or entrada_eixoY.value == '': #testa se há valores válidos nas entradas para as colunas
+                saida_usuário.value = 'Ponha valores válidos de colunas!'
+            else:
+                teste_coluna = arquivo.Testa_colunas( #será true se as douas colunas existirem
+                    colunaX=entrada_eixoX.value,
+                    colunaY=entrada_eixoY.value
+                )
+
+                if teste_coluna == False:
+                    saida_usuário.value = 'ERRO: alguma coluna (ou as duas) não existe no arquivo.'
+                else:
+                    saida_usuário.value = 'Gráfico criado com sucesso!'
+                    bot_abre_graf.disabled = False
+        page.update()
 
 
 # Validação do arquivo:
     def pick_files_result(e: ft.FilePickerResultEvent):    
-        if e.files: # testa se algum arquivo foi selecionado 
 
+        if e.files: # testa se algum arquivo foi selecionado 
             caminho_arquivo.value = ",".join(map(lambda f: f.path, e.files))
             
             arquivo = Arquivo( # cria um objeto "Arquivo", com o nome e o endereco sendo o caminho pego usando o pick_file
                 nome='arquivo_user',
                 endereco=caminho_arquivo.value
             )
-
-            print(arquivo.get_endereco) # teste para ver se tá pegando o endereco certo
-            print(arquivo.get_colunas_arq[0]) # teste para ver se tá pegando as colunas
         else:
-
             caminho_arquivo.value = "Nenhum arquivo selecionado." 
 
         caminho_arquivo.update() # atualiza valores da variável de caminho_arquivo selecionados
+        
 
 
     seletor_caminho_arquivo = ft.FilePicker(on_result=pick_files_result) # cria o seletor para selecão do arquivo
      # chama a função de verificação de caminho_arquivo, ao fim (para cancelar ou seleção do arquivo)
 
     page.overlay.append(seletor_caminho_arquivo) # adiciona o seletor sobre a página
-    caminho_arquivo = ft.Text() # variável que aloca o caminho
+    caminho_arquivo = ft.Text(value='') # variável que aloca o caminho
+
 
 # Adição dos elementos no app
     page.add(
@@ -96,6 +133,7 @@ def main(page: ft.Page): # Criação de página inicial do app
         ),
         ft.Row(
             controls=[
+
                 ft.ElevatedButton( # botão no aplicativo para seleção
                     
                     "Selecionar Arquivo",
@@ -103,9 +141,9 @@ def main(page: ft.Page): # Criação de página inicial do app
                     on_click=lambda _: seletor_caminho_arquivo.pick_files(
                         allow_multiple=False
                     ) #chama a função pick_files do seletor_caminho_arquivo,
-
                 ),
                 caminho_arquivo
+
             ],
             alignment=ft.MainAxisAlignment.CENTER
         ),
@@ -118,7 +156,17 @@ def main(page: ft.Page): # Criação de página inicial do app
 
             ],
             alignment=ft.MainAxisAlignment.CENTER
-        )
+        ),
+        ft.Row(
+            controls=[
+
+                saida_usuário,
+                bot_abre_graf
+
+            ],
+            alignment=ft.MainAxisAlignment.CENTER
+        ),
+    
     )
 
 
