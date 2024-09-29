@@ -29,7 +29,7 @@ class Arquivo():
         return colunas
     
     
-    def Testa_colunas(
+    def Testa_colunas( # recebe as colunas e as validam
             self,
             colunaX: str,
             colunaY: str
@@ -42,7 +42,7 @@ class Arquivo():
             return True
         
 
-    def cria_graifco(
+    def cria_graifco( # cria o gráfico
             self,
             colunaX: str,
             colunaY: str
@@ -54,6 +54,19 @@ class Arquivo():
             y=colunaY
         )
         return grafico
+    
+
+    def abre_graf( # abre o gráfico criado
+            self,
+            colunaX: str,
+            colunaY: str
+    ): # abre o arquivo no formato html, no navegador
+
+        grafico = self.cria_graifco(
+            colunaX=colunaX,
+            colunaY=colunaY
+        )
+        grafico.show()
 
 
 
