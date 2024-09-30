@@ -18,11 +18,11 @@ import flet as ft
 from conversor import Arquivo
 
 
-def main(page: ft.Page): # Criação de página inicial do app
+def main(page: ft.Page): 
     page.title = 'Criador de gráfico'
     page.window_resizable = False
 
-#Elementos:
+#Elementos a serem adicionados:
     mensagem_ini = ft.Text(
         value='Gerador de gráficos',
         size=40
@@ -56,9 +56,11 @@ def main(page: ft.Page): # Criação de página inicial do app
     saida_usuário = ft.Text(value='Aqui aparecerá a mensagem para usuário')
     
     
-#Funcção para criar grafico e abrir arquivo
-    def abre_graf(): # abre o arquivo no formato html, no navegador
-
+    def abre_graf():
+        """
+        Função do bot_abre_graf. Usa a função da classe Arquivo
+        abre_graf() para abrir o gráfico no navegador.
+        """
         arquivo = Arquivo(
             nome='arquivo_user',
             endereco=caminho_arquivo.value
@@ -70,9 +72,12 @@ def main(page: ft.Page): # Criação de página inicial do app
         )
 
 
-# Testa valores de coluna
     def testa_colunas():
-
+        """
+        Função do botão bot_testa_colunas. Irá validar as entradas
+        do user para cada uma das colunas e, usando o método Testa_colunas,
+        verifica se as colunas existem no arquivo. Habilita botão de abrir
+        """
         arquivo = Arquivo(
             nome='arquivo_user',
             endereco=caminho_arquivo.value
@@ -83,30 +88,28 @@ def main(page: ft.Page): # Criação de página inicial do app
         else: 
             if entrada_eixoX.value == '' or entrada_eixoY.value == '': #testa se há valores válidos nas entradas para as colunas
                 saida_usuário.value = 'Ponha valores válidos de colunas!'
+                bot_abre_graf.disabled = True
             else:
-                teste_coluna = arquivo.Testa_colunas( #será true se as douas colunas existirem
+                teste_coluna = arquivo.Testa_colunas( 
                     colunaX=entrada_eixoX.value,
                     colunaY=entrada_eixoY.value
                 )
-
                 if teste_coluna == False:
                     saida_usuário.value = 'ERRO: alguma coluna (ou as duas) não existe no arquivo.'
+                    bot_abre_graf.disabled = True
                 else:
                     saida_usuário.value = 'Gráfico criado com sucesso!'
                     bot_abre_graf.disabled = False
         page.update()
 
 
-# Validação do arquivo:
     def pick_files_result(e: ft.FilePickerResultEvent):    
-
+        """
+        função de verificação do arquivo selecionado. Se o arquivo é selecionado
+        o caminho dele é pego e alocado em caminho_arquivo.
+        """
         if e.files: # testa se algum arquivo foi selecionado 
             caminho_arquivo.value = ",".join(map(lambda f: f.path, e.files))
-            
-            arquivo = Arquivo( # cria um objeto "Arquivo", com o nome e o endereco sendo o caminho pego usando o pick_file
-                nome='arquivo_user',
-                endereco=caminho_arquivo.value
-            )
         else:
             caminho_arquivo.value = "Nenhum arquivo selecionado." 
 
@@ -141,7 +144,7 @@ def main(page: ft.Page): # Criação de página inicial do app
                     icon=ft.icons.FILE_OPEN_SHARP,
                     on_click=lambda _: seletor_caminho_arquivo.pick_files(
                         allow_multiple=False
-                    ) #chama a função pick_files do seletor_caminho_arquivo,
+                    )
                 ),
                 caminho_arquivo
 

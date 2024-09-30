@@ -20,6 +20,9 @@ class Arquivo():
 
     @property
     def get_colunas_arq(self):
+        """
+        Só funciona para .csv, por enquanto
+        """
         
         arquivo = pd.read_csv(
             filepath_or_buffer=self.get_endereco
@@ -29,24 +32,34 @@ class Arquivo():
         return colunas
     
     
-    def Testa_colunas( # recebe as colunas e as validam
+    def Testa_colunas(
             self,
             colunaX: str,
             colunaY: str
     ):
+        """
+        Recebe entradas para colunas X e Y e testa
+        se elas existem no arquivo selecionado
+        return: True (se existirem)
+        return: False (se não existirem)
+        """
         colunas = self.get_colunas_arq
         
-        if (colunaX not in colunas) or (colunaY not in colunas): #testa se as colunas estão no arquivo mesmo
+        if (colunaX not in colunas) or (colunaY not in colunas):
             return False
         else:
             return True
         
 
-    def cria_graifco( # cria o gráfico
+    def cria_grafico( 
             self,
             colunaX: str,
             colunaY: str
     ):
+        """
+        Recebe as colunas (já testadas) e cria o gráfico
+        return: o gráfico criado
+        """
         arquivo = pd.read_csv(self.get_endereco)
         grafico = px.histogram(
             data_frame=arquivo,
@@ -56,13 +69,17 @@ class Arquivo():
         return grafico
     
 
-    def abre_graf( # abre o gráfico criado
+    def abre_graf(
             self,
             colunaX: str,
             colunaY: str
-    ): # abre o arquivo no formato html, no navegador
-
-        grafico = self.cria_graifco(
+    ): 
+        """
+        Recebe as colunas (já testadas) e usa o cria_grafico
+        para criar o gráfico de acordo com as colunas.
+        Abre o gráfico no navegador
+        """
+        grafico = self.cria_grafico(
             colunaX=colunaX,
             colunaY=colunaY
         )
